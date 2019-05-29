@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Live Statistics</h1>
+
+    <div class="ct-chart ct-perfect-fourth"></div>
+
+    <button class="chartButton" id="chart1">Update Chainsaw Sms</button>
+    <button class="chartButton" id="chart2">Update Vehicle Sms</button>
+
+    <script>
+
+        var smsChart;
+        var getData = $.get('/data');
+
+        getData.done(function(results) {
+            var data = {
+                // A labels array that can contain any sort of values
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                // Our series array that contains series objects or in this case series data arrays
+                series: [
+                    results.results
+                ]
+            };
+
+            var options = {
+                width : 500 ,
+                height : 400
+            }
+
+            // Create a new line chart object where as first parameter we pass in a selector
+            // that is resolving to our chart container element. The Second parameter
+            // is the actual data object.
+            smsChart = new Chartist.Line('.ct-chart', data);
+
+        });
+
+
+        function updateChart(id) {
+
+            var updatedData = $.get('/data', {'id': id});
+
+            updatedData.done(function(results) {
+
+                var data = {
+                        // A labels array that can contain any sort of values
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                        // Our series array that contains series objects or in this case series data arrays
+                        series: [
+                            results.results
+                        ]
+                    };
+
+                smsChart.update(data);
+
+            });
+        }
+
+        //$("#update").on('click', updateChart);
+        $('.chartButton').on('click', function(){
+            var id = $(this).attr('id');
+            updateChart(id)
+        });
+
+    </script>
+{% endblock content %}
