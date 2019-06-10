@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.owner.image_file) }}"/>
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.user_pi', username=post.owner.username) }}">{{ post.owner.username }}</a>
+                <small class="text-muted">{{ post.date_created.strftime('%Y-%m-%d') }}</small>
+                {%  if post.owner == current_user %}
+                    <div>
+                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('pis.update_pi', post_id=post.id) }}">Update Pi</a>
+                        <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete Pi</button>
+                    </div>
+                {% endif %}
+
+            </div>
+            <h2><a class="card-title" href="{{ url_for('pis.pi', post_id=post.id) }}">{{ post.raspi_id }}</a></h2>
+            <p class="card-subtitle mb-2">Ranger Responsible : {{ post.rangername }}</p>
+            <p class="card-subtitle mb-2 text-muted">Contact: {{ post.phone }}</p>
+        </div>
+    <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Are you sure you want to delete you Pi?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <form action="{{ url_for('pis.delete_pi', post_id=post.id) }}" method="POST">
+                            <input class="btn btn-danger" type="submit" value="Delete">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+{% endblock content %}
