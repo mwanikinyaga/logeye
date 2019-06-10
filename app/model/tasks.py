@@ -1,8 +1,5 @@
-import json, os, time, requests, datetime, pytz
+import json, os, time, requests, datetime
 from os import listdir
-from pathlib import Path
-import sqlite3
-from sqlite3 import Error
 import africastalking
 from operator import itemgetter
 from app import db, create_app
@@ -99,7 +96,7 @@ def model_run(begin):
                                             print(message)
 
 
-                                            response = sms.send(message, recipients)
+                                            #response = sms.send(message, recipients)
 
                                             m = db.session.query(Sms).order_by(Sms.id.desc()).first()
                                             db.session.add(SmsStatus(sms_id=m.id, status_id=1))
@@ -145,7 +142,7 @@ def model_run(begin):
                                             # Set your message
                                             message = "Vehicle presence detected here:\n\n" "http://maps.google.com/?q=" + lat + "," + lng
                                             print(message)
-                                            response = sms.send(message, recipients)
+                                            #response = sms.send(message, recipients)
 
                                             m = db.session.query(Sms).order_by(Sms.id.desc()).first()
                                             db.session.add(SmsStatus(sms_id=m.id, status_id=1))

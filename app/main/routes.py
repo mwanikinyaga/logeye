@@ -1,17 +1,26 @@
-from flask import render_template, request, Blueprint, jsonify, request
+from flask import render_template, request, Blueprint, jsonify, request, redirect, url_for
 from app.models import Ownership
 from random import sample
 from app.models import Sms, SmsStatus
 from flask_login import login_required
 from app import db
 import time
-from datetime import datetime, timedelta
+import datetime
 
 
 main = Blueprint('main', __name__)
 
 
 
+@main.route('/add/<int:id>', methods=['POST'])
+@login_required
+def add(id):
+    x = db.session.query(SmsStatus).filter_by(sms_id=id).first()
+    x.status_id = 2
+    x.updated_date = datetime.datetime.now()
+    db.session.commit()
+
+    return redirect(url_for('main.dashboard'))
 
 @main.route('/home')
 def home():
@@ -21,6 +30,9 @@ def home():
 
 
 @main.route('/')
+
+
+
 @main.route('/dashboard')
 @login_required
 def dashboard():
@@ -49,9 +61,6 @@ def dashboard():
     data = connection.execute(my_qry)
     data = data.fetchall()
 
-    context = {
-        'now': int(time.time()),
-        'strftime': time.strftime}
 
 
 
@@ -59,7 +68,7 @@ def dashboard():
     for i in range(0, pending):
         x = stat[i].status_id
 
-    return render_template('about.html', title = 'Dashboard', stat=stat,  context=context, pending=pending, addressed=addressed, data=data, total_chainsaws=total_chainsaws, total_vehicles=total_vehicles, sms = Sms.query.all(), values=values, labels=labels, legend=legend, coords=coords)
+    return render_template('about.html', title = 'Dashboard', stat=stat, pending=pending, addressed=addressed, data=data, total_chainsaws=total_chainsaws, total_vehicles=total_vehicles, values=values, labels=labels, legend=legend, coords=coords)
 
 
 
@@ -112,8 +121,4 @@ def smscount():
         #          data[5][1] += 1
     # return jsonify({"data": data})
     return jsonify({"data": data})
-
-
-
-
 

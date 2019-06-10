@@ -5,6 +5,8 @@ from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
+
+from app import momentjs
 from app.config import Config
 
 
@@ -28,6 +30,7 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    app.jinja_env.globals['momentjs'] = momentjs
 
     from app.users.routes import users
     from app.pis.routes import pis

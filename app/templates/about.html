@@ -3,11 +3,11 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
     <style>
-#map {
-  width: 600px;
-  height: 400px;
-}
-    {#height: 100%; width: 100%; margin: 0; padding: 0;#}
+        #map {
+            width: 990px;
+            height: 400px;
+        }
+        {#height: 100%; width: 100%; margin: 0; padding: 0;#}
 
     </style>
 {% endblock %}
@@ -103,7 +103,7 @@
                 <div class="col col-lg-12">
                     <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Summary graph</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Summary Alerts</h6>
                             </div>
 
                             <div class="card-body">
@@ -219,29 +219,35 @@
                                         </thead>
                                         <tbody>
                                         {% for data_item in data %}
-                                            <tr>
-                                                <td>{{ data_item[1] }}</td>
-                                                <td>{{ data_item[2]|round(2, 'floor') }}</td>
-                                                <td>
-                                                    {% if data_item[1] == 'Chainsaw' %}
-                                                        {{ data_item[3] }}
-                                                    {% elif data_item[1] == 'Vehicle' %}
-                                                        {{ data_item[4] }}
-                                                    {% endif %}
-                                                </td>
-                                                <td>{{ data_item[7] }}</td>
-                                                <td>
-                                                    {% if data_item[13] == 'PENDING' %}
-                                                        <a href="#" class="btn btn-warning btn-circle">
-                                                        <i class="fas fa-exclamation-triangle"></i>
-                                                        </a>
-                                                    {% elif data_item[13] == 'ADDRESSED' %}
-                                                        <a href="#" class="btn btn-success btn-circle">
-                                                            <i class="fas fa-check"></i>
-                                                        </a>
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
+                                            {% if data_item[13] != 'ADDRESSED' %}
+                                                <tr>
+                                                    <td>{{ data_item[1] }}</td>
+                                                    <td>{{ data_item[2]|round(2, 'floor') }}</td>
+                                                    <td>
+                                                        {% if data_item[1] == 'Chainsaw' %}
+                                                            {{ data_item[3] }}
+                                                        {% elif data_item[1] == 'Vehicle' %}
+                                                            {{ data_item[4] }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ data_item[7] }}</td>
+                                                    <td>
+                                                        {% if data_item[13] == 'PENDING' %}
+                                                            <form action="{{ url_for('main.add', id=data_item[0]) }}" method="POST">
+                                                                <button type="submit" class="btn btn-warning btn-circle">
+                                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                                </button>
+                                                            </form>
+
+                                                        {% elif data_item[13] == 'ADDRESSED' %}
+                                                            <button type="submit" class="btn btn-success btn-circle">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        {% endif %}
+                                                    </td>
+
+                                                </tr>
+                                            {% endif %}
                                         {% endfor %}
                                         </tbody>
                                     </table>
@@ -251,16 +257,9 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-lg-8">
-
-                    </div>
-
-                </div>
-
 
                 <div class="row">
-                    <div class="col-lg-8.8">
+                    <div class="col-lg-12">
                         <!-- Basic Card Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-4">
@@ -275,7 +274,7 @@
                                     var locations = {{ coords|tojson }};
 
 
-                                    var map = L.map('map').setView([-1.24095, 36.8142598], 11);
+                                    var map = L.map('map').setView([-1.2563, 36.8195], 11);
                                     mapLink =
                                         '<a href="http://openstreetmap.org">OpenStreetMap</a>';
                                     L.tileLayer(
@@ -294,7 +293,7 @@
                                         var circle = L.circle([locations[i][1], locations[i][2]], {
                                             color: '#8BAAAD',
                                             fillColor: '#5EB1BF',
-                                            fillOpacity: 0.4,
+                                            fillOpacity: 0,
                                             radius: 800
                                         }).addTo(map);
                                     }
